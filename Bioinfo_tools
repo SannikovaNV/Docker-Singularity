@@ -1,0 +1,56 @@
+#Base Image: Ubuntu the latest version
+
+FROM ubuntu:latest
+ENV DEBIAN_FRONTEND=noninteractive
+
+
+
+# Installing PYTHON and R. Also all the dependencies necessary.
+RUN apt-get update && apt-get upgrade -y && apt install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+
+# Add the CRAN repository:
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+
+RUN apt-get install -y --no-install-recommends \
+  build-essential \
+  r-base \
+  python3.6 \
+  python3-pip \
+  python3-setuptools \
+  python3-dev \
+  bzip2 \
+  g++ \
+  libbz2-dev \
+  libcurl4-openssl-dev \
+  liblzma-dev \
+  make \
+  ncurses-dev \
+  wget \
+  zlib1g-dev \
+  git
+
+#Installing R packages
+RUN R -e "install.packages('optparse')"
+RUN R -e "install.packages('caret')"
+RUN R -e "install.packages('BiocManager')"
+RUN R -e "install.packages('stringr')"
+
+
+# Install CONVADING requirements
+RUN apt-get install -y libstatistics-normality-perl
+
+RUN pip install numpy
+RUN pip install pandas
+RUN pip install scipy	
+RUN pip install sklearn	
+RUN pip install networkx
+
+RUN ln -s /usr/bin/python3.6 /usr/bin/python
+
+
+CMD /bin/bash
+
+# docker build -t bioinfotools_tmp2 -f Dockerfile2 .
+# docker tag 9ab562a534ef tblabfjd/bioinfotools:2.0.0
+# docker tag 9ab562a534ef tblabfjd/bioinfotools:latest
